@@ -32,14 +32,7 @@ jobs:
 
       - name: Install AWS CLI
         run: |
-          pip install awscli
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-cli@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          pip install awscli          
 
       - name: Package Lambda
         run: |
@@ -47,6 +40,10 @@ jobs:
           zip -r ../function.zip schema_check_lambda_function/
 
       - name: Deploy to Lambda
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           aws lambda update-function-code \
             --function-name S3NewCSVSchemaCheckFunction \
